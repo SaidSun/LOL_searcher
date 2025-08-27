@@ -63,8 +63,20 @@ class Matches(SQLConst._SQLConst__BASE):
 
 
 class LoLdatabase:
-    def __init__(self, logi="lol_analytic", passw="D73e55g6t08ru!", db="lol_db"):
-        self.__DATABASE_URL = f"postgresql://{logi}:{passw}@localhost/{db}"
+    def __init__(self, logi=None, passw=None, db=None):
+        if ((logi is None) or (passw is None) or (db is None)):
+            with open("../need_data.csv", "r") as file:
+                lines = file.readlines()
+            log_n_pass = lines[0].split(',')
+            self.login = log_n_pass[0]
+            self.password = log_n_pass[1]
+            self.db = log_n_pass[2].strip()
+            print(self.login, self.password, self.db)
+        else:
+            self.login = logi
+            self.password = passw
+            self.db = db
+        self.__DATABASE_URL = f"postgresql://{self.login}:{self.password}@localhost/{self.db}"
         self.__ENGINE = create_engine(self.__DATABASE_URL, echo=True)
         
     def make_db(self) -> None:
@@ -80,4 +92,20 @@ class LoLdatabase:
     def add_data(self, summoner_data, match_data):
         summoner_data.to_sql("Summoners", self.__ENGINE, if_exists="append", index=False)
         match_data.to_sql("Matches", self.__ENGINE, if_exists="append", index=False)
+
+    def match_scan(self, match_id):
+        with self.__ENGINE.connect() as connection:
+            with connection.begin():
+                result = connection.execute(text('SELECT match_id FROM "Matches" WHERE match_id = :match_id'), {"match_id" : match_id}).first()
+        return result is None
+    
+
+if __name__ == "__main__":
+    print("Test match_scan method:")
+    LOL_db = LoLdatabase()
+    match_id = input("Введите match_id: ")
+    print(f"Результат работы модуля match_scan класса LoLdatabase: {LOL_db.match_scan(match_id)}")
+
+
+
         

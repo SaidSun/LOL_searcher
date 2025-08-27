@@ -1,10 +1,12 @@
 import requests
 from urllib.parse import urlencode
 import pandas as pd
-import DataMaker
+import utils.DataMaker
+import utils.DataWorm
+import utils.SQLOL
 
 
-API_KEY="RGAPI-0f3c20ed-55dd-43d6-8798-b1d97062d11c"
+API_KEY="RGAPI-a58032b1-4c17-4a6a-b2b6-7dda4aee0127"
 DEFAULT_REGION_CODE="euw1"
 DEFAULT_REGION="europe"
 
@@ -91,9 +93,8 @@ summoner_puuid = summoner["puuid"]
 summoner_matches = get_summoner_match_id(puuid=summoner_puuid)
 print(summoner_matches, "\n")
 
-DM = DataMaker.DataMaker()
-
-DM.make_db()
+DM = utils.DataMaker.DataMaker()
+sqll = utils.SQLOL.LoLdatabase()
 
 for match_id in summoner_matches:
     match_info = get_match_info(match_id=match_id)
@@ -103,7 +104,9 @@ for match_id in summoner_matches:
     if not(if_aram(match_info)):
         summoners_data = DM.make_summoners_data(match_info)
         match_data = DM.make_match_data(match_info)
-        DM.add_data(summoners_data, match_data)
+        # DM.add_data(summoners_data, match_data)
+
+print(f"Is match {summoner_matches[0]} in db?: ", sqll.match_scan(summoner_matches[0]))
 
 
 # # План

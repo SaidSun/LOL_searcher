@@ -1,6 +1,5 @@
 import pandas as pd
 import warnings
-import SQLOL
 
 warnings.filterwarnings("ignore")
 class DataMaker:
@@ -33,7 +32,6 @@ class DataMaker:
                        "teamId" : "team_id",
                        "summoner1Id" : "spell1",
                        "summoner2Id" : "spell2"}
-        self.LOL_db = SQLOL.LoLdatabase()
         
     def make_summoners_data(self, match_info):
         info_pd = pd.DataFrame(match_info["info"]["participants"])
@@ -74,12 +72,12 @@ class DataMaker:
         return pd.DataFrame([match_data])
     
     
-    def make_db(self):
-        self.LOL_db.make_db()
+    def make_db(self, LOL_db):
+        LOL_db.make_db()
 
-    def truncate_db(self):
-        self.LOL_db.truncate_db()
+    def truncate_db(self, LOL_db):
+        LOL_db.truncate_db()
 
-    def add_data(self, summoners_data, match_data):
-        self.LOL_db.add_data(summoners_data, match_data)
+    def add_data(self, summoners_data, match_data, LOL_db):
+        LOL_db.add_data(summoners_data, match_data)
     
