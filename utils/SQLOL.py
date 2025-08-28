@@ -71,13 +71,12 @@ class LoLdatabase:
             self.login = log_n_pass[0]
             self.password = log_n_pass[1]
             self.db = log_n_pass[2].strip()
-            print(self.login, self.password, self.db)
         else:
             self.login = logi
             self.password = passw
             self.db = db
         self.__DATABASE_URL = f"postgresql://{self.login}:{self.password}@localhost/{self.db}"
-        self.__ENGINE = create_engine(self.__DATABASE_URL, echo=True)
+        self.__ENGINE = create_engine(self.__DATABASE_URL, echo=False)
         
     def make_db(self) -> None:
         SQLConst._SQLConst__BASE.metadata.create_all(self.__ENGINE)

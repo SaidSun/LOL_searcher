@@ -36,6 +36,7 @@ class DataMaker:
     def make_summoners_data(self, match_info):
         info_pd = pd.DataFrame(match_info["info"]["participants"])
         summoners_data = info_pd[list(self.CHAMP_FIELD_MAPPING.keys())]
+        print(match_info["metadata"]["participants"])
         summoners_data["puuid"] = match_info["metadata"]["participants"]
         summoners_data["match_id"] = match_info["metadata"]["matchId"]
         perks_data = info_pd["perks"].apply(pd.Series)
